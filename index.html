@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kendalikan Algoritma, Rebut Peradaban</title>
+    
+    <!-- Google Fonts: Unbounded (High-tech geometric headers) & Space Grotesk (Tech reading font) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Unbounded:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons for visual metaphors -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS for modern design utility framework -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Theme Configuration for the Cyber-Islamic aesthetic -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'sans-serif'],
+                        display: ['"Unbounded"', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            dark: '#030712',
+                            darker: '#01030a',
+                            mint: '#10b981',
+                            mintGlow: '#34d399',
+                            gold: '#f59e0b',
+                            goldGlow: '#fbbf24',
+                            tile: '#0e1424',
+                            border: '#1e293b'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Modern Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #01030a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+
+        /* Slide Transition Animations */
+        .slide-frame {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .slide-inactive {
+            opacity: 0;
+            transform: scale(0.97) translateY(15px);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .slide-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Glowing Custom Filters */
+        .neon-glow-mint {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+        }
+        .neon-glow-gold {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+        }
+        .text-glow-mint {
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-cyber-darker text-slate-100 min-h-screen overflow-x-hidden selection:bg-cyber-mint selection:text-black">
+
+    <script>
+        /* Cybernetic SFX Synthesizer using Web Audio API */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx || audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            try {
+                const now = audioCtx.currentTime;
+                
+                if (type === 'hover') {
+                    // Soft high-frequency digital tick
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1800, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.05);
+                    gain.gain.setValueAtTime(0.015, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.06);
+                } 
+                else if (type === 'transition') {
+                    // Smooth frequency swoop representing sliding
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(440, now + 0.15);
+                    gain.gain.setValueAtTime(0.04, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.22);
+                }
+                else if (type === 'theme') {
+                    // Ambient resonance toggle
+                    const osc1 = audioCtx.createOscillator();
+                    const osc2 = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc1.type = 'sine';
+                    osc2.type = 'sine';
+                    osc1.frequency.setValueAtTime(523.25, now); // C5
+                    osc2.frequency.setValueAtTime(659.25, now); // E5
+                    gain.gain.setValueAtTime(0.03, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc1.start(now);
+                    osc2.start(now);
+                    osc1.stop(now + 0.45);
+                    osc2.stop(now + 0.45);
+                }
+                else if (type === 'climax') {
+                    // Epic spiritual digital ambient bell pad
+                    const chords = [130.81, 164.81, 196.00, 261.63, 329.63, 392.00]; // C Major chord stack
+                    chords.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + (idx * 0.03));
+                        gain.gain.setValueAtTime(0.02, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now);
+                        osc.stop(now + 1.3);
+                    });
+                }
+            } catch (err) {
+                console.log("Audio playback blocked or failed:", err);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const soundBtn = document.getElementById('sound-toggle-btn');
+            if (soundEnabled) {
+                soundBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                soundBtn.title = "Disable Sound Effects";
+            } else {
+                soundBtn.innerHTML = '<i class="fa-solid fa-volume-xmark text-slate-500"></i>';
+                soundBtn.title = "Enable Sound Effects";
+            }
+        }
+    </script>
+
+    <!-- Navigation & Control Header -->
+    <header class="bg-cyber-dark/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-mint to-cyber-gold flex items-center justify-center animate-pulse-slow">
+                <i class="fa-solid fa-compass-drafting text-cyber-darker text-xl font-bold"></i>
+            </div>
+            <div>
+                <h1 class="font-display font-bold text-xs tracking-wider uppercase text-cyber-mint">Cyber-Islamic Thought</h1>
+                <p class="text-xs text-slate-400 font-sans">Kendalikan Algoritma, Rebut Peradaban</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-2">
+            <!-- View Mode Switcher -->
+            <button onclick="setViewMode('slides')" id="view-slides-btn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-mint text-black border border-cyber-mint transition-all" onmouseenter="playSound('hover')">
+                <i class="fa-solid fa-play-circle mr-1"></i> Slide View
+            </button>
+            <button onclick="setViewMode('document')" id="view-doc-btn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-transparent transition-all" onmouseenter="playSound('hover')">
+                <i class="fa-solid fa-scroll mr-1"></i> Document View
+            </button>
+            
+            <div class="h-6 w-[1px] bg-slate-800 mx-2"></div>
+
+            <!-- Custom Controls -->
+            <button onclick="toggleSound()" id="sound-toggle-btn" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all text-xs" title="Toggle SFX" onmouseenter="playSound('hover')">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+            <button onclick="cycleTheme()" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyber-gold transition-all text-xs" title="Cycle Color Theme" onmouseenter="playSound('hover')">
+                <i class="fa-solid fa-palette"></i>
+            </button>
+            <button onclick="toggleFullscreen()" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all text-xs" title="Fullscreen Mode" onmouseenter="playSound('hover')">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 flex flex-col lg:flex-row gap-6 relative">
+        
+        <!-- Left Sidebar Index (Visible in Presentation Mode) -->
+        <aside id="sidebar-index" class="w-full lg:w-80 flex-shrink-0 bg-cyber-tile/50 border border-slate-800/80 rounded-2xl p-4 h-[calc(100vh-160px)] sticky top-24 overflow-y-auto hidden lg:block transition-all">
+            <h2 class="font-display text-xs font-bold tracking-wider text-slate-400 mb-4 px-2 uppercase">Daftar Slide Deck</h2>
+            <nav id="slide-index-nav" class="space-y-1.5">
+                <!-- Programmatically filled index items -->
+            </nav>
+        </aside>
+
+        <!-- Right Presentation Stage -->
+        <div class="flex-grow flex flex-col gap-4">
+            
+            <!-- Interactive Slide Stage (Standard Slide View) -->
+            <div id="slides-view-stage" class="w-full relative aspect-[16/9] min-h-[380px] md:min-h-[500px] lg:min-h-[600px] bg-cyber-tile border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col justify-between">
+                
+                <!-- Cosmic background grid overlay inside slides -->
+                <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-tr from-cyber-mint/5 to-cyber-gold/5 pointer-events-none"></div>
+
+                <!-- Active Slide Container -->
+                <div id="slides-carousel" class="w-full h-full flex-grow relative overflow-hidden p-6 md:p-12 lg:p-16 flex flex-col justify-center">
+                    
+                    <!-- ============================================ -->
+                    <!-- SLIDE 1: INTRO (MENGGUNCANG KESADARAN) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-active flex flex-col items-center justify-center text-center gap-4 h-full" data-slide-id="1">
+                        <div class="px-4 py-1.5 bg-cyber-mint/10 border border-cyber-mint/30 rounded-full text-[11px] font-display font-bold text-cyber-mint tracking-widest uppercase">
+                            Islamic Thought & Digital Exposure
+                        </div>
+                        <h2 class="font-display font-black text-2xl md:text-4xl lg:text-5xl leading-tight tracking-tight max-w-4xl text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-cyber-mint to-cyber-gold">
+                            Lupa Arah atau Diarahkan?
+                        </h2>
+                        <p class="font-sans text-base md:text-xl text-slate-400 max-w-2xl italic leading-relaxed">
+                            "Kalau Allah Sudah Memberimu Otak, Kenapa Hidupmu Masih Dikendalikan Algoritma?"
+                        </p>
+                        
+                        <!-- Mini SVG Visual Element (Tech Spiritual Gate) -->
+                        <div class="w-32 h-32 mt-4 relative">
+                            <svg class="w-full h-full animate-spin-slow" viewBox="0 0 100 100">
+                                <rect x="25" y="25" width="50" height="50" rx="4" fill="none" stroke="#10b981" stroke-width="2" />
+                                <rect x="25" y="25" width="50" height="50" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.5" transform="rotate(45 50 50)" />
+                                <circle cx="50" cy="50" r="10" fill="#01030a" stroke="#10b981" stroke-width="2" />
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 2: SIKLUS TANPA BATAS (REALITA GENGGAMAN) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="2">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-cyber-mint"></span>
+                                <span class="text-xs font-display font-bold text-cyber-mint tracking-wider uppercase">Fase Kebiasaan</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Siklus Scroll Tanpa Akhir</h2>
+                            <ul class="space-y-2 font-sans text-sm md:text-base text-slate-400">
+                                <li class="flex items-center gap-3 text-red-400"><i class="fa-solid fa-mobile-screen"></i> Scroll TikTok, Instagram, YouTube.</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left"></i> Scroll lagi, swipe lagi, lupakan waktu.</li>
+                                <li class="flex items-center gap-3 text-cyber-gold"><i class="fa-regular fa-face-laugh-beam"></i> Tertawa sejenak menikmati konten instan.</li>
+                                <li class="flex items-center gap-3 text-slate-400"><i class="fa-solid fa-circle-minus"></i> Dan berakhir hampa tanpa sisa ilmu atau hikmah.</li>
+                            </ul>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="scrollerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ef4444"/>
+                                        <stop offset="50%" stop-color="#f59e0b"/>
+                                        <stop offset="100%" stop-color="#10b981"/>
+                                    </linearGradient>
+                                </defs>
+                                <!-- Interactive Mobile Frame -->
+                                <rect x="90" y="30" width="120" height="240" rx="18" fill="#01030a" stroke="#1e293b" stroke-width="4" />
+                                <line x1="130" y1="40" x2="170" y2="40" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+                                
+                                <!-- Spinning attention sucking vortex -->
+                                <g transform="translate(150, 150)">
+                                    <circle cx="0" cy="0" r="50" fill="none" stroke="url(#scrollerGrad)" stroke-width="3" stroke-dasharray="15 5 10 5" class="animate-spin-slow"/>
+                                    <path d="M-30,-20 Q0,-60 30,-20 T90,20" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M-60,10 Q-20,40 20,10 T80,30" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+                                    <!-- Sucking energy dots -->
+                                    <circle cx="-15" cy="-15" r="4" fill="#ef4444" class="animate-ping"/>
+                                    <circle cx="20" cy="25" r="3" fill="#10b981"/>
+                                </g>
+                                <!-- Hand symbol pulling attention down -->
+                                <path d="M140,240 C140,220 155,200 155,185 C155,180 148,175 145,185 L135,210" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" fill="none"/>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 3: PARADOKS INFORMASI (HILANG ARAH) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="3">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-cyber-mint"></span>
+                                <span class="text-xs font-display font-bold text-cyber-gold tracking-wider uppercase">Zaman Tercanggih</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Dunia dalam Genggaman</h2>
+                            <p class="font-sans text-sm md:text-base text-slate-400 leading-relaxed">
+                                Kita hidup di era paling gemilang dalam sejarah peradaban manusia. Melalui layar saku, kita sanggup memantau kabar belahan dunia terjauh, menekuni disiplin apa saja, dan bermimpi menjadi siapa saja.
+                            </p>
+                            <div class="p-4 bg-red-950/20 border border-red-500/20 rounded-xl flex gap-3 items-start">
+                                <i class="fa-solid fa-triangle-exclamation text-red-400 mt-1"></i>
+                                <p class="text-xs md:text-sm text-slate-300">
+                                    <strong>Tapi Anehnya:</strong> Semakin luas cakrawala informasi yang bisa kita renggut, justru semakin banyak manusia yang tersesat dan kehilangan arah hidup.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="150" cy="150" r="110" fill="#01030a" stroke="#1e293b" stroke-width="2" />
+                                <g stroke="#10b981" stroke-width="1.5" fill="none" opacity="0.4">
+                                    <circle cx="150" cy="150" r="90" stroke-dasharray="10 5" />
+                                    <line x1="150" y1="40" x2="150" y2="260" />
+                                    <line x1="40" y1="150" x2="260" y2="150" />
+                                </g>
+                                <!-- Concentric signal waves representing chaotic inputs -->
+                                <circle cx="150" cy="150" r="10" fill="#ef4444" class="animate-pulse" />
+                                <path d="M 120,120 A 42,42 0 0,1 180,120" stroke="#f59e0b" stroke-width="2" fill="none"/>
+                                <path d="M 100,100 A 70,70 0 0,1 200,100" stroke="#ef4444" stroke-width="2" fill="none"/>
+                                <path d="M 80,80 A 98,98 0 0,1 220,80" stroke="#10b981" stroke-width="3" fill="none"/>
+                                
+                                <!-- Floating compass needle spinning out of control -->
+                                <polygon points="150,70 160,150 150,170 140,150" fill="#ef4444" transform="rotate(210 150 150)" class="animate-pulse-slow"/>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 4: ILMU MENGEJAR KITA (KRISIS MEMILAH) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="4">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-cyber-mint"></span>
+                                <span class="text-xs font-display font-bold text-cyber-mint tracking-wider uppercase">Paradoks Pengetahuan</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Krisis Filter Kebenaran</h2>
+                            <p class="font-sans text-sm md:text-base text-slate-400 leading-relaxed">
+                                Dahulu, para pencari ilmu harus menempuh badai padang pasir berbulan-bulan demi memverifikasi sebaris hadis. Hari ini? Jutaan tumpukan ilmu mengetuk-ngetuk beranda media sosial kita secara gratis.
+                            </p>
+                            <p class="font-sans text-sm md:text-base text-cyber-gold font-semibold">
+                                <i class="fa-solid fa-lightbulb mr-2"></i> Problemnya bukan lagi kelangkaan informasi, melainkan kelumpuhan filter dalam membedakan mana yang haq (kebenaran) dan mana yang batil (distraksi).
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <!-- Visualizing two columns: Mud (Unfiltered Info) vs Pure Water (Filtered Truth) -->
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Funnel representing filtering -->
+                                <path d="M 60,60 L 240,60 L 170,160 L 170,240 L 130,240 L 130,160 Z" fill="#0e1424" stroke="#1e293b" stroke-width="4"/>
+                                <!-- Chaos dots above -->
+                                <circle cx="100" cy="80" r="6" fill="#ef4444"/>
+                                <circle cx="150" cy="75" r="8" fill="#3b82f6"/>
+                                <circle cx="200" cy="85" r="5" fill="#f59e0b"/>
+                                <circle cx="120" cy="110" r="7" fill="#ef4444"/>
+                                <circle cx="180" cy="115" r="6" fill="#10b981"/>
+                                
+                                <!-- Pure golden drops flowing below filter node -->
+                                <g filter="drop-shadow(0px 0px 8px #f59e0b)">
+                                    <path d="M 150,180 L 155,195 A 5,5 0 1,1 145,195 Z" fill="#f59e0b"/>
+                                    <path d="M 150,220 L 155,235 A 5,5 0 1,1 145,235 Z" fill="#10b981"/>
+                                </g>
+                                <!-- Filtering grid lines inside funnel -->
+                                <line x1="120" y1="130" x2="180" y2="130" stroke="#10b981" stroke-width="3" stroke-dasharray="4 4" />
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 5: PRIORITAS YANG TERTUKAR (METRIK IRONI) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="5">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-red-500"></span>
+                                <span class="text-xs font-display font-bold text-red-400 tracking-wider uppercase">Metrik Fakta Ironis</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Dunia Tahu, Akhirat Ragu</h2>
+                            <ul class="space-y-3 font-sans text-sm md:text-base text-slate-400">
+                                <li class="flex items-start gap-3">
+                                    <i class="fa-solid fa-circle-exclamation text-red-500 mt-1"></i>
+                                    <span>Kita hafal runtutan tren, nama <strong>influencer viral</strong>, serta gosip terhangat, namun asing dengan tokoh ulama pembimbing jiwa.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fa-solid fa-circle-exclamation text-red-500 mt-1"></i>
+                                    <span>Kita hafal update detail dunia modern, tapi linglung saat diajak memikirkan <strong>tujuan penciptaan kita sendiri</strong>.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex flex-col items-center justify-center gap-4">
+                            <div class="w-full max-w-sm bg-cyber-dark p-6 rounded-2xl border border-slate-800">
+                                <h4 class="font-display text-[10px] text-slate-400 tracking-widest uppercase mb-4">Porsi Fokus Pikiran Gen Z</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span class="text-red-400">Tren & Feed Sosial Media</span>
+                                            <span class="font-bold text-red-400">99%</span>
+                                        </div>
+                                        <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden">
+                                            <div class="bg-gradient-to-r from-red-500 to-amber-500 h-full rounded-full" style="width: 99%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span class="text-cyber-mint">Eksplorasi Visi Iman & Agama</span>
+                                            <span class="font-bold text-cyber-mint">1%</span>
+                                        </div>
+                                        <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden">
+                                            <div class="bg-cyber-mint h-full rounded-full animate-pulse" style="width: 5%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 6: KEMBALI KE FITRAH (MATA, TELINGA, HATI) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="6">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-cyber-mint"></span>
+                                <span class="text-xs font-display font-bold text-cyber-mint tracking-wider uppercase">Tujuan Hakiki</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Bukan Sekadar Konsumen Layar</h2>
+                            <p class="font-sans text-sm md:text-base text-slate-400 leading-relaxed">
+                                Allah tidak merancang mata, telinga, dan jantung kognisi kita hanya untuk tersandera oleh gemerlap jutaan piksel distraksi dunia digital.
+                            </p>
+                            <p class="font-sans text-sm md:text-base text-slate-300 leading-relaxed font-semibold">
+                                "Sesungguhnya pendengaran, penglihatan dan hati, semuanya itu akan diminta pertanggungjawabannya." (QS. Al-Isra: 36)
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <radialGradient id="divineGlow" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#01030a" stop-opacity="0"/>
+                                    </radialGradient>
+                                </defs>
+                                <!-- Cosmic background aura -->
+                                <circle cx="150" cy="150" r="120" fill="url(#divineGlow)"/>
+                                
+                                <!-- Central glowing heart with geometric lines connecting outward -->
+                                <g transform="translate(150, 150)">
+                                    <!-- Outer sensory points -->
+                                    <circle cx="-60" cy="-60" r="15" fill="#0e1424" stroke="#10b981" stroke-width="2"/> <!-- Eye symbol location -->
+                                    <path d="M-68,-60 Q-60,-68 -52,-60 T-68,-60" fill="none" stroke="#10b981" stroke-width="1.5"/>
+                                    <circle cx="-60" cy="-60" r="3" fill="#10b981" />
+
+                                    <circle cx="60" cy="-60" r="15" fill="#0e1424" stroke="#10b981" stroke-width="2"/> <!-- Ear symbol location -->
+                                    <path d="M52,-64 Q60,-52 68,-60" fill="none" stroke="#10b981" stroke-width="1.5"/>
+
+                                    <circle cx="0" cy="50" r="15" fill="#0e1424" stroke="#f59e0b" stroke-width="2"/> <!-- Intellect/Heart location -->
+                                    <path d="M-5,45 Q0,40 5,45 T0,55 Z" fill="#f59e0b"/>
+
+                                    <!-- Connecting circuit pathways to center -->
+                                    <line x1="-45" y1="-45" x2="-10" y2="-10" stroke="#10b981" stroke-width="2" stroke-dasharray="4 2"/>
+                                    <line x1="45" y1="-45" x2="10" y2="-10" stroke="#10b981" stroke-width="2" stroke-dasharray="4 2"/>
+                                    <line x1="0" y1="35" x2="0" y2="10" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 2"/>
+
+                                    <!-- The Central Core (The Pure Soul / Qalb) -->
+                                    <polygon points="0,-15 13,-5 8,10 -8,10 -13,-5" fill="#01030a" stroke="#f59e0b" stroke-width="3" />
+                                    <circle cx="0" cy="0" r="4" fill="#10b981" class="animate-ping"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 7: MANUSIA ATAU ROBOT (SANDERA DIAL_UP) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="7">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-red-500"></span>
+                                <span class="text-xs font-display font-bold text-red-400 tracking-wider uppercase">Kehilangan Kebebasan Berpikir</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Disetir Garis Kode Digital</h2>
+                            <p class="font-sans text-sm md:text-base text-slate-400 leading-relaxed">
+                                Tanpa pembentukan nalar kritis berbasis kebenaran wahyu, manusia modern tak ubahnya <strong>robot organik</strong>. Digerakkan secara otomatis oleh perintah loop instruksi buatan manusia lain.
+                            </p>
+                            <p class="font-sans text-sm md:text-base text-slate-400">
+                                Hari ini kita menyukai satu tren, esok membencinya. Semata-mata karena dipaksa beresonansi dengan sirkuit viralitas tanpa pernah melayangkan pertanyaan kritis: <em>"Apakah hal ini haq di mata Allah?"</em>
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Half-human, half-machine brain graphic -->
+                                <rect x="30" y="30" width="240" height="240" rx="20" fill="#01030a" stroke="#1e293b" stroke-width="2"/>
+                                <g transform="translate(150,150)">
+                                    <!-- Left Brain: Organic Curves -->
+                                    <path d="M-10,-60 C-60,-60 -70,-20 -70,10 C-70,40 -50,60 -10,60 Z" fill="none" stroke="#10b981" stroke-width="3"/>
+                                    <!-- Right Brain: Cyber Circuits -->
+                                    <path d="M10,-60 L50,-60 L60,-40 L60,10 L40,30 L40,60 L10,60 Z" fill="none" stroke="#f59e0b" stroke-width="3"/>
+                                    
+                                    <!-- Connector Nodes -->
+                                    <circle cx="50" cy="-60" r="4" fill="#f59e0b"/>
+                                    <circle cx="60" cy="10" r="4" fill="#ef4444"/>
+                                    <circle cx="40" cy="60" r="4" fill="#10b981"/>
+                                    <line x1="-10" y1="0" x2="10" y2="0" stroke="#ef4444" stroke-width="2" stroke-dasharray="2 2" />
+                                    
+                                    <!-- Glowing Cybernetic Eyes in brain core -->
+                                    <circle cx="0" cy="-25" r="8" fill="#01030a" stroke="#ef4444" stroke-width="2"/>
+                                    <circle cx="0" cy="-25" r="2" fill="#ef4444"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 8: ISLAM & TEKNOLOGI (MENGUASAI ALGORITMA) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="8">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-cyber-mint"></span>
+                                <span class="text-xs font-display font-bold text-cyber-mint tracking-wider uppercase">Sains & Iman</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Kuasai Kode & Logika Masa Depan</h2>
+                            <p class="font-sans text-sm md:text-base text-slate-400 leading-relaxed">
+                                Islam tidak pernah menolak kemajuan zaman. Kuasai pemrograman siber, rekayasa kecerdasan buatan (AI), analisis data besar, hingga sains antariksa. Kita diperintahkan untuk menjadi kaum yang perkasa dalam bidang keilmuan.
+                            </p>
+                            <div class="p-4 bg-emerald-950/25 border border-cyber-mint/30 rounded-2xl">
+                                <p class="text-xs md:text-sm text-cyber-mintGlow">
+                                    <strong>Syarat Mutlak:</strong> Perkembangan teknologi digital harus digerakkan oleh tangan-tangan yang memiliki arah moralitas, dan ilmu berada di kepala orang-orang yang beriman kokoh.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <!-- Rub El Hizb Islamic Processor -->
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="neonGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#10b981"/>
+                                        <stop offset="100%" stop-color="#f59e0b"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="20" y="20" width="260" height="260" rx="16" fill="#01030a" stroke="#1e293b" stroke-width="2"/>
+                                <!-- Microchip pins radiating -->
+                                <g stroke="#1e293b" stroke-width="3">
+                                    <line x1="10" y1="80" x2="20" y2="80" /> <line x1="10" y1="120" x2="20" y2="120" /> <line x1="10" y1="160" x2="20" y2="160" /> <line x1="10" y1="200" x2="20" y2="200" />
+                                    <line x1="280" y1="80" x2="290" y2="80" /> <line x1="280" y1="120" x2="290" y2="120" /> <line x1="280" y1="160" x2="290" y2="160" /> <line x1="280" y1="200" x2="290" y2="200" />
+                                    <line x1="80" y1="10" x2="80" y2="20" /> <line x1="120" y1="10" x2="120" y2="20" /> <line x1="160" y1="10" x2="160" y2="20" /> <line x1="200" y1="10" x2="200" y2="20" />
+                                    <line x1="80" y1="280" x2="80" y2="290" /> <line x1="120" y1="280" x2="120" y2="290" /> <line x1="160" y1="280" x2="160" y2="290" /> <line x1="200" y1="280" x2="200" y2="290" />
+                                </g>
+                                <!-- The Eight Point Star Core Processor (Rub El Hizb) -->
+                                <g transform="translate(150, 150) rotate(22.5)">
+                                    <rect x="-60" y="-60" width="120" height="120" fill="none" stroke="url(#neonGold)" stroke-width="4" />
+                                    <rect x="-60" y="-60" width="120" height="120" fill="none" stroke="url(#neonGold)" stroke-width="4" transform="rotate(45)" />
+                                    <circle cx="0" cy="0" r="30" fill="#01030a" stroke="#10b981" stroke-width="3" />
+                                    <circle cx="0" cy="0" r="6" fill="#f59e0b" class="animate-ping"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 9: PINTAR SEKALIGUS BENAR (WAHYU & AKAL) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="9">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-cyber-gold"></span>
+                                <span class="text-xs font-display font-bold text-cyber-gold tracking-wider uppercase">Sinergi Sempurna</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Pintar Saja Belum Cukup</h2>
+                            <p class="font-sans text-sm md:text-base text-slate-400 leading-relaxed">
+                                Dunia sekuler hari ini sanggup memproduksi jutaan otak jenius yang lihai meretas sistem namun miskin moralitas dan tanggung jawab. Islam menuntut lahirnya generasi yang <strong>pintar sekaligus benar</strong>.
+                            </p>
+                            <p class="font-sans text-sm md:text-base text-slate-400">
+                                Sains rasional yang dipasung tanpa bimbingan wahyu memicu destruksi tatanan kehidupan, sedangkan ilmu yang bersujud kepada kebesaran Ilahi melahirkan <strong>keberkahan peradaban</strong>.
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <!-- Al-Qur'an sending cyber rays of light -->
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <radialGradient id="quranRay" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.5"/>
+                                        <stop offset="100%" stop-color="#01030a" stop-opacity="0"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="150" cy="150" r="110" fill="url(#quranRay)" />
+                                <!-- Rehal (Traditional Book Stand) -->
+                                <path d="M90,200 L150,170 L210,200 L180,220 L150,190 L120,220 Z" fill="#0e1424" stroke="#f59e0b" stroke-width="2"/>
+                                <!-- Quran Pages -->
+                                <path d="M100,165 C120,145 145,150 150,168 C155,150 180,145 200,165" fill="#ffffff" stroke="#1e293b" stroke-width="1"/>
+                                <!-- Ray beams shooting vertically from Quran core -->
+                                <g stroke="#10b981" stroke-width="2" opacity="0.8">
+                                    <line x1="150" y1="150" x2="150" y2="40" stroke-width="3" stroke-dasharray="10 5" class="animate-pulse" />
+                                    <line x1="130" y1="140" x2="110" y2="60" stroke-dasharray="4 4" />
+                                    <line x1="170" y1="140" x2="190" y2="60" stroke-dasharray="4 4" />
+                                    <circle cx="150" cy="40" r="5" fill="#f59e0b"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 10: PERTANYAAN EKSISTENSIAL (VISI BESAR) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col items-center justify-center text-center gap-6 h-full" data-slide-id="10">
+                        <div class="px-4 py-1.5 bg-cyber-gold/10 border border-cyber-gold/30 rounded-full text-[11px] font-display font-bold text-cyber-gold tracking-widest uppercase">
+                            Pertanyaan Eksistensial
+                        </div>
+                        
+                        <div class="relative max-w-3xl">
+                            <!-- Large decorative quote marks -->
+                            <span class="absolute -top-12 -left-8 font-serif text-8xl text-cyber-mint/25 select-none">“</span>
+                            <blockquote class="font-display font-black text-xl md:text-3xl lg:text-4xl leading-relaxed text-slate-100 tracking-tight">
+                                Jangan sekadar bertanya: "Aku ingin menjadi apa?" tapi bertanyalah: "Untuk apa Allah menciptakanku?"
+                            </blockquote>
+                            <span class="absolute -bottom-20 -right-8 font-serif text-8xl text-cyber-mint/25 select-none">”</span>
+                        </div>
+                        
+                        <cite class="font-sans text-xs md:text-sm text-cyber-gold font-bold tracking-widest uppercase mt-4">
+                            — Kompas Jiwa Generasi Digital
+                        </cite>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 11: MENATA ULANG PRIORITAS (AKSI NYATA) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col lg:flex-row items-center gap-8 h-full" data-slide-id="11">
+                        <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-[1px] bg-cyber-mint"></span>
+                                <span class="text-xs font-display font-bold text-cyber-mint tracking-wider uppercase">Fase Rekonstruksi</span>
+                            </div>
+                            <h2 class="font-display font-extrabold text-2xl md:text-3xl text-slate-100">Sinergi Tujuan Kehidupan</h2>
+                            <p class="font-sans text-sm md:text-base text-slate-400 leading-relaxed">
+                                Manakala fondasi orientasi kehidupan Anda sudah lurus menancap karena Allah, maka seluruh kerja keras rasional berubah total dimensinya:
+                            </p>
+                            <ul class="space-y-3 font-sans text-xs md:text-sm text-slate-300">
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-cyber-mint"></i> <strong>Proses Belajar:</strong> Bernilai tabungan ibadah yang berlimpah pahala.</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-code text-cyber-mint"></i> <strong>Karya & Inovasi:</strong> Bermetamorfosis menjadi dakwah peradaban modern.</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-trophy text-cyber-gold"></i> <strong>Kesuksesan Dunia:</strong> Menjelma anak tangga kokoh menuju ridha-Nya.</li>
+                            </ul>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex justify-center">
+                            <!-- Circular Roadmap -->
+                            <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="150" cy="150" r="100" fill="none" stroke="#1e293b" stroke-width="3" />
+                                <circle cx="150" cy="150" r="100" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="150 400" />
+                                
+                                <!-- Step 1 Node -->
+                                <circle cx="150" cy="50" r="15" fill="#01030a" stroke="#10b981" stroke-width="3" />
+                                <text x="150" y="54" fill="#10b981" font-size="10" font-weight="bold" text-anchor="middle">1</text>
+                                <text x="150" y="30" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">Niat</text>
+
+                                <!-- Step 2 Node -->
+                                <circle cx="250" cy="150" r="15" fill="#01030a" stroke="#10b981" stroke-width="3" />
+                                <text x="250" y="154" fill="#10b981" font-size="10" font-weight="bold" text-anchor="middle">2</text>
+                                <text x="250" y="180" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">Karya</text>
+
+                                <!-- Step 3 Node -->
+                                <circle cx="150" cy="250" r="15" fill="#01030a" stroke="#f59e0b" stroke-width="3" />
+                                <text x="150" y="254" fill="#f59e0b" font-size="10" font-weight="bold" text-anchor="middle">3</text>
+                                <text x="150" y="280" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">Surga</text>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- SLIDE 12: MANIFESTO MANUSIA MERDEKA (MANUAL ALAM) -->
+                    <!-- ============================================ -->
+                    <section class="slide-frame slide-inactive flex flex-col items-center justify-center text-center gap-6 h-full" data-slide-id="12">
+                        <div class="px-4 py-1.5 bg-cyber-mint/10 border border-cyber-mint/30 rounded-full text-[11px] font-display font-bold text-cyber-mint tracking-widest uppercase">
+                            The Cyber-Deen Manifesto
+                        </div>
+                        <h2 class="font-display font-black text-2xl md:text-3xl lg:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-cyber-mint to-cyber-gold">
+                            Kendalikan Layarmu, Bebaskan Jiwamu!
+                        </h2>
+                        <p class="font-sans text-sm md:text-base text-slate-400 max-w-3xl leading-relaxed">
+                            Jangan biarkan deretan algoritma mendikte kemudi takdirmu. Jadikan Al-Qur'an poros kompas penuntun. Belajarlah setinggi mungkin, berpikirlah sedalam mungkin, berkaryalah sebesar mungkin... namun sujudlah serendah-rendahnya di hadapan Allah.
+                        </p>
+                        
+                        <div class="flex flex-col md:flex-row gap-4 mt-4 w-full justify-center">
+                            <div class="px-6 py-4 bg-cyber-tile border border-slate-800 rounded-2xl flex flex-col gap-1">
+                                <span class="text-[10px] uppercase font-display font-bold text-slate-400 tracking-wider">Misi Generasi Baru</span>
+                                <span class="font-display font-bold text-xs text-cyber-mint">Think Deep. Learn Hard.</span>
+                            </div>
+                            <div class="px-6 py-4 bg-cyber-tile border border-slate-800 rounded-2xl flex flex-col gap-1">
+                                <span class="text-[10px] uppercase font-display font-bold text-slate-400 tracking-wider">Prinsip Hidup</span>
+                                <span class="font-display font-bold text-xs text-cyber-gold">Worship Sincerely. Build Civilization.</span>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- Slide Footer Controls (Visible in Presentation Mode) -->
+                <footer class="bg-cyber-dark/80 backdrop-blur border-t border-slate-800 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 z-10">
+                    <div class="flex items-center gap-4">
+                        <span id="slide-num-indicator" class="font-display font-extrabold text-sm text-cyber-mint">01 / 12</span>
+                        <div class="flex items-center gap-1">
+                            <!-- Progress Bar -->
+                            <div class="w-24 sm:w-40 bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div id="slide-progress-bar" class="bg-gradient-to-r from-cyber-mint to-cyber-gold h-full rounded-full transition-all duration-300" style="width: 8.33%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide Navigation Control Buttons -->
+                    <div class="flex items-center gap-3">
+                        <button onclick="changeSlide(-1)" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-all disabled:opacity-50" id="prev-btn" onmouseenter="playSound('hover')">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        
+                        <!-- Autoplay Button -->
+                        <button onclick="toggleAutoplay()" id="autoplay-btn" class="px-4 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-2 text-xs font-semibold transition-all" onmouseenter="playSound('hover')">
+                            <i class="fa-solid fa-play"></i> Autoplay
+                        </button>
+
+                        <button onclick="changeSlide(1)" class="w-10 h-10 rounded-xl bg-cyber-mint text-black hover:bg-cyber-mintGlow flex items-center justify-center font-bold transition-all" id="next-btn" onmouseenter="playSound('hover')">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </footer>
+
+            </div>
+
+            <!-- Document View Stage (Alternative continuous layout) -->
+            <div id="document-view-stage" class="hidden w-full flex flex-col gap-8 bg-cyber-dark text-slate-100 p-6 md:p-12 border border-slate-800 rounded-3xl">
+                <!-- Programmatically generated from slides inside JavaScript -->
+            </div>
+
+            <!-- User Manual Indicator Overlay -->
+            <div id="controls-hint" class="flex flex-wrap justify-center items-center gap-6 py-2 px-4 bg-slate-900/30 rounded-2xl border border-slate-800/40 text-[11px] text-slate-400">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-keyboard text-cyber-mint"></i> Gunakan tombol panah <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-white font-mono">←</kbd> <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-white font-mono">→</kbd></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-arrows-alt text-cyber-gold"></i> Klik / Sentuh &amp; geser pada area slide untuk membalikkan lembaran</span>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Core Application Logic -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 12;
+        let viewMode = 'slides'; // 'slides' or 'document'
+        let currentThemeIdx = 0;
+        let autoplayInterval = null;
+        let autoplayDelay = 5000; // 5 seconds slide transition
+
+        // Define beautiful Theme Palettes
+        const themes = [
+            { name: "Cyber-Mint & Gold", primary: "#10b981", secondary: "#f59e0b", background: "#030712", tile: "#0e1424" },
+            { name: "Royal Amber & Crimson", primary: "#f59e0b", secondary: "#ef4444", background: "#0b0404", tile: "#1a0b0d" },
+            { name: "Clean Developer Dark", primary: "#3b82f6", secondary: "#10b981", background: "#0f172a", tile: "#1e293b" }
+        ];
+
+        // Slide Metadata for Index Sidebar
+        const slideMetadata = [
+            { id: 1, title: "Lupa Arah atau Diarahkan?", icon: "fa-compass" },
+            { id: 2, title: "Siklus Scroll Tanpa Akhir", icon: "fa-mobile-screen" },
+            { id: 3, title: "Dunia dalam Genggaman", icon: "fa-globe" },
+            { id: 4, title: "Krisis Filter Kebenaran", icon: "fa-filter" },
+            { id: 5, title: "Dunia Tahu, Akhirat Ragu", icon: "fa-circle-exclamation" },
+            { id: 6, title: "Bukan Sekadar Konsumen", icon: "fa-eye" },
+            { id: 7, title: "Disetir Garis Kode", icon: "fa-robot" },
+            { id: 8, title: "Kuasai Kode & Logika", icon: "fa-terminal" },
+            { id: 9, title: "Pintar Saja Belum Cukup", icon: "fa-book-open" },
+            { id: 10, title: "Pertanyaan Eksistensial", icon: "fa-quote-left" },
+            { id: 11, title: "Sinergi Tujuan Hidup", icon: "fa-road" },
+            { id: 12, title: "Manifesto Masa Depan", icon: "fa-bullhorn" }
+        ];
+
+        window.onload = function() {
+            buildSlideIndex();
+            buildDocumentView();
+            updateControls();
+            
+            // Add keyboard event listener
+            document.addEventListener('keydown', handleKeyPress);
+
+            // Add swipe detection for touch screens
+            let startX = 0;
+            const carousel = document.getElementById('slides-carousel');
+            carousel.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+
+            carousel.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].clientX;
+                const diffX = startX - endX;
+                if (Math.abs(diffX) > 50) { // minimum threshold for swipe
+                    if (diffX > 0) {
+                        changeSlide(1);
+                    } else {
+                        changeSlide(-1);
+                    }
+                }
+            }, { passive: true });
+        };
+
+        // Build the Sidebar Slide Navigation elements
+        function buildSlideIndex() {
+            const container = document.getElementById('slide-index-nav');
+            container.innerHTML = '';
+            
+            slideMetadata.forEach(slide => {
+                const navItem = document.createElement('button');
+                navItem.className = `w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group duration-200 ${slide.id === currentSlide ? 'bg-cyber-mint/10 text-cyber-mint border border-cyber-mint/25' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'}`;
+                navItem.id = `sidebar-btn-${slide.id}`;
+                navItem.onclick = () => jumpToSlide(slide.id);
+                navItem.onmouseenter = () => playSound('hover');
+                
+                navItem.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg bg-slate-900 flex items-center justify-center text-[10px] group-hover:bg-slate-800 transition-all ${slide.id === currentSlide ? 'text-cyber-mint' : 'text-slate-500'}">
+                        <i class="fa-solid ${slide.icon}"></i>
+                    </span>
+                    <span class="truncate flex-grow font-semibold">${slide.id}. ${slide.title}</span>
+                    <i class="fa-solid fa-angle-right text-[10px] opacity-0 group-hover:opacity-100 transition-all"></i>
+                `;
+                container.appendChild(navItem);
+            });
+        }
+
+        // Build alternative Continuous Document View from slides
+        function buildDocumentView() {
+            const docContainer = document.getElementById('document-view-stage');
+            docContainer.innerHTML = '';
+            
+            // Header for PDF or scrolling document
+            const docHeader = document.createElement('div');
+            docHeader.className = "border-b border-slate-800 pb-8 text-center max-w-4xl mx-auto flex flex-col gap-4";
+            docHeader.innerHTML = `
+                <div class="mx-auto w-16 h-16 rounded-2xl bg-cyber-mint/10 flex items-center justify-center text-cyber-mint text-3xl mb-2">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                <h1 class="font-display font-black text-2xl md:text-3xl tracking-tight text-white uppercase">Kendalikan Algoritma, Rebut Peradaban</h1>
+                <p class="font-sans text-sm md:text-base text-slate-400">Peta jalan digital, eksplorasi kritis, dan manifesto pemikiran Islam modern untuk generasi digital baru.</p>
+            `;
+            docContainer.appendChild(docHeader);
+
+            // Replicate contents of slide presentation inside a readable document page
+            const originalSlides = document.querySelectorAll('.slide-frame');
+            originalSlides.forEach((slide, idx) => {
+                const card = document.createElement('article');
+                card.className = "py-12 border-b border-slate-800/60 max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center justify-between";
+                
+                // Extract text and visuals and copy them elegantly
+                const clone = slide.cloneNode(true);
+                clone.className = "w-full flex flex-col md:flex-row items-center gap-8 justify-between opacity-100 transform-none relative";
+                
+                card.appendChild(clone);
+                docContainer.appendChild(card);
+            });
+        }
+
+        // Handle physical slide transitions
+        function changeSlide(direction) {
+            let nextSlide = currentSlide + direction;
+            if (nextSlide >= 1 && nextSlide <= totalSlides) {
+                jumpToSlide(nextSlide);
+            }
+        }
+
+        function jumpToSlide(slideId) {
+            if (slideId === currentSlide) return;
+            
+            // Play slide whoosh sweep sound effect
+            playSound('transition');
+
+            // Trigger epic resonant synth on slide 10-12 (climax / manifesto)
+            if (slideId >= 10 && currentSlide < 10) {
+                playSound('climax');
+            }
+
+            // Remove active style from current slide
+            const currentEl = document.querySelector(`[data-slide-id="${currentSlide}"]`);
+            if (currentEl) {
+                currentEl.classList.remove('slide-active');
+                currentEl.classList.add('slide-inactive');
+            }
+
+            // Apply active styles to new slide
+            currentSlide = slideId;
+            const nextEl = document.querySelector(`[data-slide-id="${currentSlide}"]`);
+            if (nextEl) {
+                nextEl.classList.remove('slide-inactive');
+                nextEl.classList.add('slide-active');
+            }
+
+            updateControls();
+            
+            // Highlight index item
+            slideMetadata.forEach(slide => {
+                const btn = document.getElementById(`sidebar-btn-${slide.id}`);
+                if (btn) {
+                    if (slide.id === currentSlide) {
+                        btn.className = "w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-cyber-mint/10 text-cyber-mint border border-cyber-mint/25";
+                    } else {
+                        btn.className = "w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent";
+                    }
+                }
+            });
+        }
+
+        // Update user interfaces and control metrics
+        function updateControls() {
+            // Update slide counter text
+            document.getElementById('slide-num-indicator').innerText = `${currentSlide.toString().padStart(2, '0')} / ${totalSlides.toString().padStart(2, '0')}`;
+            
+            // Update progress bar width percentages
+            const progressPct = (currentSlide / totalSlides) * 100;
+            document.getElementById('slide-progress-bar').style.width = `${progressPct}%`;
+
+            // Enable or disable slide buttons appropriately
+            document.getElementById('prev-btn').disabled = (currentSlide === 1);
+            document.getElementById('next-btn').disabled = (currentSlide === totalSlides);
+        }
+
+        // Handles keyboard presentation flow
+        function handleKeyPress(e) {
+            if (viewMode !== 'slides') return;
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        }
+
+        // Toggle view styles (Slides Mode vs Scrolling Article Document Mode)
+        function setViewMode(mode) {
+            playSound('theme');
+            viewMode = mode;
+            
+            const slideStage = document.getElementById('slides-view-stage');
+            const docStage = document.getElementById('document-view-stage');
+            const sidebar = document.getElementById('sidebar-index');
+            const hints = document.getElementById('controls-hint');
+
+            const slideBtn = document.getElementById('view-slides-btn');
+            const docBtn = document.getElementById('view-doc-btn');
+
+            if (mode === 'slides') {
+                slideStage.classList.remove('hidden');
+                docStage.classList.add('hidden');
+                sidebar.classList.remove('hidden');
+                hints.classList.remove('hidden');
+                
+                slideBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-mint text-black border border-cyber-mint transition-all";
+                docBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-transparent transition-all";
+            } else {
+                slideStage.classList.add('hidden');
+                docStage.classList.remove('hidden');
+                sidebar.classList.add('hidden');
+                hints.classList.add('hidden');
+
+                slideBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-transparent transition-all";
+                docBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-mint text-black border border-cyber-mint transition-all";
+                
+                // Recompile document view markup
+                buildDocumentView();
+            }
+        }
+
+        // Cycle Themes Programmatically
+        function cycleTheme() {
+            playSound('theme');
+            currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+            const theme = themes[currentThemeIdx];
+
+            // Set styling configurations and variables inside document root elements
+            document.documentElement.style.setProperty('--color-primary', theme.primary);
+            document.documentElement.style.setProperty('--color-secondary', theme.secondary);
+
+            // Re-map elements dynamically with visual colors
+            document.querySelectorAll('.text-cyber-mint').forEach(el => {
+                el.style.color = theme.primary;
+            });
+            document.querySelectorAll('.border-cyber-mint').forEach(el => {
+                el.style.borderColor = theme.primary;
+            });
+            document.querySelectorAll('.bg-cyber-mint').forEach(el => {
+                el.style.backgroundColor = theme.primary;
+            });
+
+            // Update accent indicators
+            const progressBar = document.getElementById('slide-progress-bar');
+            progressBar.style.background = `linear-gradient(90deg, ${theme.primary}, ${theme.secondary})`;
+        }
+
+        // Autoplay Loop Toggle
+        function toggleAutoplay() {
+            playSound('hover');
+            const btn = document.getElementById('autoplay-btn');
+            
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+                btn.innerHTML = '<i class="fa-solid fa-play"></i> Autoplay';
+                btn.classList.remove('bg-cyber-mint', 'text-black');
+                btn.classList.add('bg-slate-800', 'text-slate-200');
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-pause animate-pulse"></i> Playing';
+                btn.classList.remove('bg-slate-800', 'text-slate-200');
+                btn.classList.add('bg-cyber-mint', 'text-black');
+                
+                autoplayInterval = setInterval(() => {
+                    if (currentSlide < totalSlides) {
+                        changeSlide(1);
+                    } else {
+                        // Loop back to start
+                        jumpToSlide(1);
+                    }
+                }, autoplayDelay);
+            }
+        }
+
+        // Fullscreen Mode Toggle Handler
+        function toggleFullscreen() {
+            playSound('theme');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Failed to trigger Fullscreen mode: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
